@@ -41,7 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
         lineEditEditor->setFixedSize(100, 20);
         lineEditEditor->setStyleSheet("border-radius: 5px; background: yellow");
         lineEditEditor->setPlaceholderText(" 编辑人必填");
-        connect(lineEditEditor, SIGNAL(returnPressed()), this, SLOT(setServerAddr()));
         ui->mainToolBar->addWidget(lineEditEditor);
     }
 
