@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1171</width>
-    <height>532</height>
+    <width>635</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,168 +17,65 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>31</x>
-      <y>32</y>
-      <width>206</width>
-      <height>120</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="labelName">
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>姓名：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEditName">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-radius: 5px;</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="labelPhone">
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>手机：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEditPhone">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-radius: 5px;</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLabel" name="labelReceipt">
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>收据：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEditReceipt">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-radius: 5px;</string>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QLabel" name="labelCode">
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>编号：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEditCode">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>STKaiti</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border-radius: 5px;</string>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="lineEditName">
+          <property name="font">
+           <font>
+            <family>YouYuan</family>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>姓名：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditPhone">
+          <property name="font">
+           <font>
+            <family>YouYuan</family>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>手机：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="font">
+           <font>
+            <family>YouYuan</family>
+            <pointsize>13</pointsize>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>性别：</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableView" name="tableViewAdd"/>
+      </item>
+      <item>
+       <widget class="QTableView" name="tableViewSearch">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;查询窗口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="toolButtonStyle">
