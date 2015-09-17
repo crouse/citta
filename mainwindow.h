@@ -9,6 +9,7 @@
 #include <QTcpSocket>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QSqlDatabase>
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,7 @@ public:
     QStandardItemModel *viewModelAdd;
     QStandardItemModel *viewModelSearch;
     bool databaseTest();
+    bool connectDatabase();
 
     QString serverIp;
 
@@ -39,6 +41,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QSqlDatabase db;
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#define DB_NAME "citta"
+#define DB_PASS "123456"
+#define DB_USER "citta"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -87,6 +90,24 @@ bool MainWindow::databaseTest()
     return ret;
 }
 
+bool MainWindow::connectDatabase()
+{
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(serverIp);
+    db.setDatabaseName(DB_NAME);
+    db.setUserName(DB_USER);
+    db.setPassword(DB_PASS);
+
+    if(!db.open()) {
+        QMessageBox::critical(this, "数据库错误", db.lastError().text());
+        return false;
+    }
+
+    qDebug() << QString("db status: %1 ").arg(db.open());
+
+    return true;
+}
+
 void MainWindow::on_actionDb_triggered()
 {
    bool conStatus = databaseTest();
@@ -97,6 +118,7 @@ void MainWindow::on_actionDb_triggered()
    }
    ui->actionDb->setDisabled(true);
    ui->actionConfig->setDisabled(true);
+   connectDatabase();
 }
 
 void MainWindow::on_actionConfig_triggered()
