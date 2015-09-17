@@ -34,6 +34,17 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->mainToolBar->addWidget(lineEditConfig);
     }
 
+
+    /* editor lineEdit */
+    {
+        lineEditEditor = new QLineEdit;
+        lineEditEditor->setFixedSize(100, 20);
+        lineEditEditor->setStyleSheet("border-radius: 5px; background: yellow");
+        lineEditEditor->setPlaceholderText(" 编辑人必填");
+        connect(lineEditEditor, SIGNAL(returnPressed()), this, SLOT(setServerAddr()));
+        ui->mainToolBar->addWidget(lineEditEditor);
+    }
+
     /* hide widgets */
     {
         ui->tableViewSearch->hide();

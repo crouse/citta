@@ -24,6 +24,7 @@ public:
     ~MainWindow();
     QLineEdit *lineEditSearch;
     QLineEdit *lineEditConfig;
+    QLineEdit *lineEditEditor;
     QStandardItemModel *viewModelAdd;
     QStandardItemModel *viewModelSearch;
     bool databaseTest();
