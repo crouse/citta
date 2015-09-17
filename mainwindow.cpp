@@ -7,16 +7,20 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    /* search */
+    /* search lineEdit */
+    {
     lineEditSearch = new QLineEdit;
     lineEditSearch->setFixedSize(200, 20);
     lineEditSearch->setStyleSheet("border-radius: 5px;");
     lineEditSearch->setPlaceholderText(" 查询 <ENTER>");
     connect(lineEditSearch, SIGNAL(returnPressed()), this, SLOT(searchInfo()));
     ui->mainToolBar->addWidget(lineEditSearch);
+    }
 
     /* hide widgets */
+    {
     ui->tableViewSearch->hide();
+    }
 
     /* table view setting */
     {
