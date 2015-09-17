@@ -141,3 +141,26 @@ void MainWindow::on_actionConfig_triggered()
 
     lineEditConfig->setFocus();
 }
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (!db.isOpen() || !databaseTest()) {
+       QMessageBox::critical(this, "数据库未连接", "请连接数据库");
+       if (!ui->actionDb->isEnabled()) {
+           ui->actionDb->setEnabled(true);
+           ui->actionConfig->setEnabled(true);
+       }
+
+       return;
+    }
+
+    if (lineEditEditor->text().isEmpty()) {
+        QMessageBox::information(this, "编辑人不能为空", "请设置编辑人");
+        return;
+    }
+
+    if (ui->lineEditName->text().isEmpty()) {
+        QMessageBox::information(this, "姓名不能为空", "请写入姓名");
+        return;
+    }
+}
