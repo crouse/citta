@@ -10,6 +10,8 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QSqlDatabase>
+#include <QSqlQueryModel>
+#include <QTableView>
 
 namespace Ui {
 class MainWindow;
@@ -27,8 +29,10 @@ public:
     QLineEdit *lineEditEditor;
     QStandardItemModel *viewModelAdd;
     QStandardItemModel *viewModelSearch;
+
     bool databaseTest();
     bool connectDatabase();
+    void appendData(QTableView *tableView, QString qsql);
 
     QString serverIp;
 
@@ -45,6 +49,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
+    QSqlQueryModel *model;
 };
 
 #endif // MAINWINDOW_H

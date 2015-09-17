@@ -118,8 +118,26 @@ bool MainWindow::connectDatabase()
     return true;
 }
 
+void MainWindow::appendData(QTableView *tableView, QString qsql)
+{
+    model = new QSqlQueryModel;
+    model->setQuery(qsql);
+    model->setHeaderData(0, Qt::Horizontal, "姓名");
+    model->setHeaderData(1, Qt::Horizontal, "法名");
+    model->setHeaderData(2, Qt::Horizontal, "手机");
+    model->setHeaderData(3, Qt::Horizontal, "收据编号");
+    model->setHeaderData(4, Qt::Horizontal, "皈依证号");
+    tableView->setModel(model);
+    tableView->show();
+}
+
 void MainWindow::on_actionDb_triggered()
 {
+   if (lineEditEditor->text().isEmpty()) {
+       QMessageBox::information(this, "编辑人不能为空", "请输入编辑人姓名");
+       return;
+   }
+
    bool conStatus = databaseTest();
    if (conStatus == false) {
        qDebug() << "Can not connect to mysql server";
@@ -129,6 +147,8 @@ void MainWindow::on_actionDb_triggered()
    ui->actionDb->setDisabled(true);
    ui->actionConfig->setDisabled(true);
    connectDatabase();
+
+   appendData(ui->tableViewAdd, "select name, fname, phone_num, receipt, code from zen_male");
 }
 
 void MainWindow::on_actionConfig_triggered()
