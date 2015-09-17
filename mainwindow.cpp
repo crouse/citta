@@ -6,20 +6,34 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    /* init global parameters */
+    serverIp = "192.168.31.5";
 
     /* search lineEdit */
     {
-    lineEditSearch = new QLineEdit;
-    lineEditSearch->setFixedSize(200, 20);
-    lineEditSearch->setStyleSheet("border-radius: 5px;");
-    lineEditSearch->setPlaceholderText(" 查询 <ENTER>");
-    connect(lineEditSearch, SIGNAL(returnPressed()), this, SLOT(searchInfo()));
-    ui->mainToolBar->addWidget(lineEditSearch);
+        lineEditSearch = new QLineEdit;
+        lineEditSearch->setFixedSize(200, 20);
+        lineEditSearch->setStyleSheet("border-radius: 5px;");
+        lineEditSearch->setPlaceholderText(" 查询 <ENTER>");
+        connect(lineEditSearch, SIGNAL(returnPressed()), this, SLOT(searchInfo()));
+        ui->mainToolBar->addWidget(lineEditSearch);
+    }
+
+
+    /* config lineEdit */
+    {
+        lineEditConfig = new QLineEdit;
+        lineEditConfig->setFixedSize(100, 20);
+        lineEditConfig->setStyleSheet("border-radius: 5px;");
+        lineEditConfig->setPlaceholderText(serverIp);
+        lineEditConfig->setReadOnly(true);
+        connect(lineEditConfig, SIGNAL(returnPressed()), this, SLOT(setServerAddr()));
+        ui->mainToolBar->addWidget(lineEditConfig);
     }
 
     /* hide widgets */
     {
-    ui->tableViewSearch->hide();
+        ui->tableViewSearch->hide();
     }
 
     /* table view setting */
@@ -44,13 +58,54 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 }
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+/* slots */
 void MainWindow::searchInfo()
 {
     QString searchText = lineEditSearch->text();
     qDebug() << "search text: " + searchText;
 }
 
-MainWindow::~MainWindow()
+void MainWindow::setServerAddr()
 {
-    delete ui;
+    serverIp = lineEditConfig->text();
+    qDebug() << "serverIp: " + serverIp;
+    lineEditConfig->setReadOnly(true);
+}
+
+bool MainWindow::databaseTest()
+{
+    bool ret;
+    QTcpSocket tsock;
+    tsock.connectToHost(serverIp, 3306);
+    ret = tsock.waitForConnected(1000);
+    if (ret) tsock.close();
+    return ret;
+}
+
+void MainWindow::on_actionDb_triggered()
+{
+   bool conStatus = databaseTest();
+   if (conStatus == false) {
+       qDebug() << "Can not connect to mysql server";
+       QMessageBox::critical(this, "无法连接数据库", "请设置正确的数据库地址以及端口.");
+       return;
+   }
+   ui->actionDb->setDisabled(true);
+   ui->actionConfig->setDisabled(true);
+}
+
+void MainWindow::on_actionConfig_triggered()
+{
+    if (lineEditConfig->isReadOnly()) {
+        lineEditConfig->setReadOnly(false);
+        lineEditConfig->setEnabled(true);
+        qDebug() << "on_actionConfig_triggered()";
+    }
+
+    lineEditConfig->setFocus();
 }
