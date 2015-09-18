@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     /* init global parameters */
     serverIp = "192.168.31.5";
-
     /* search lineEdit */
     {
         lineEditSearch = new QLineEdit;
@@ -131,7 +130,7 @@ bool MainWindow::connectDatabase()
     return true;
 }
 
-void MainWindow::appendData(QTableView *tableView, QString qsql)
+int MainWindow::appendData(QTableView *tableView, QString qsql)
 {
     model = new QSqlQueryModel;
     model->setQuery(qsql);
@@ -140,8 +139,13 @@ void MainWindow::appendData(QTableView *tableView, QString qsql)
     model->setHeaderData(2, Qt::Horizontal, "手机");
     model->setHeaderData(3, Qt::Horizontal, "收据编号");
     model->setHeaderData(4, Qt::Horizontal, "皈依证号");
+
+    int rowCount = model->rowCount();
+    if (rowCount == 0) return 0;
+
     tableView->setModel(model);
     tableView->show();
+    return rowCount;
 }
 
 void MainWindow::on_actionDb_triggered()
@@ -257,6 +261,7 @@ void MainWindow::on_pushButtonSave_clicked()
     qDebug() << "save record";
 
     //end
+    updateZen();
     clearLineEditors();
 }
 
@@ -265,12 +270,44 @@ bool MainWindow::updateZen()
     QString name = ui->lineEditName->text();
     QString phone = ui->lineEditPhone->text();
     QString gender = ui->lineEditGender->text();
+
+    qDebug() << "here";
+
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_male` "
+                           " WHERE `name` = '%1' AND `phone_num` = '%2' AND `gender` = '%3' "
+                           ).arg(name, phone, gender);
+
+    int rowCount = appendData(ui->tableViewSearch, qsql);
+
+    qDebug() << rowCount;
+
+    if (rowCount) {
+        ui->tableViewSearch->show();
+        QMessageBox::information(this, "已在库中", "未实现");
+        return true;
+    }
+    return true;
 }
 
+void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos)
+{
+    qDebug() << "begining of right";
+    int rowNum = ui->tableViewSearch->verticalHeader()->logicalIndexAt(pos);
+    if (rowNum < 0) {
+        qDebug() << "exit 298";
+        return;
+    }
 
+    QMenu *popMenu = new QMenu(this);
+    QString name = viewModelSearch->index(rowNum, 0).data().toString();
+    QString phone = viewModelSearch->index(rowNum, 2).data().toString();
+    qDebug() << name << phone;
+    popMenu->addAction(ui->actionModifyNameOrPhone);
+    popMenu->exec(QCursor::pos());
+}
 
-
-
-
-
-
+void MainWindow::on_actionModifyNameOrPhone_triggered()
+{
+    qDebug() << "on_actionModifyNameOrPhone_triggered()";
+}

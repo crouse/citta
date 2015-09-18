@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLineEdit>
+#include <QMenu>
 #include <QDebug>
 #include <QtXlsx>
 #include <QtSql>
@@ -35,8 +36,9 @@ public:
     bool isOk();
     bool isChinese(QString name);
     bool updateZen();
-    void appendData(QTableView *tableView, QString qsql);
+    int appendData(QTableView *tableView, QString qsql);
     void clearLineEditors();
+
     QString makeFname(QString name);
 
     QString serverIp;
@@ -53,6 +55,10 @@ private slots:
     void on_actionSave_triggered();
 
     void on_pushButtonSave_clicked();
+
+    void on_tableViewSearch_customContextMenuRequested(const QPoint &pos);
+
+    void on_actionModifyNameOrPhone_triggered();
 
 private:
     Ui::MainWindow *ui;

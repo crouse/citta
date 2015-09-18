@@ -101,8 +101,20 @@
           <family>SimHei</family>
          </font>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
+        <property name="acceptDrops">
+         <bool>true</bool>
+        </property>
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;查询窗口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -178,6 +190,11 @@
    </property>
    <property name="toolTip">
     <string>保存数据到数据库</string>
+   </property>
+  </action>
+  <action name="actionModifyNameOrPhone">
+   <property name="text">
+    <string>修改姓名、手机号</string>
    </property>
   </action>
  </widget>
