@@ -181,7 +181,7 @@ void MainWindow::on_actionConfig_triggered()
     lineEditConfig->setFocus();
 }
 
-void MainWindow::on_actionSave_triggered()
+bool MainWindow::isOk()
 {
     if (!db.isOpen() || !databaseTest()) {
        QMessageBox::critical(this, "数据库未连接", "请连接数据库");
@@ -190,22 +190,44 @@ void MainWindow::on_actionSave_triggered()
            ui->actionConfig->setEnabled(true);
        }
 
-       return;
+       return false;
     }
 
     if (lineEditEditor->text().isEmpty()) {
         QMessageBox::information(this, "编辑人不能为空", "请设置编辑人");
-        return;
+        return false;
     }
 
     if (ui->lineEditName->text().isEmpty()) {
         QMessageBox::information(this, "姓名不能为空", "请写入姓名");
-        return;
+        return false;
     }
+
+    return true;
+
+}
+
+void MainWindow::clearLineEditors()
+{
+    ui->lineEditGender->clear();
+    ui->lineEditName->clear();
+    ui->lineEditPhone->clear();
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if(!isOk()) return;
+
+
+    // end
+    clearLineEditors();
 }
 
 void MainWindow::on_pushButtonSave_clicked()
 {
-    // [tbd]
+    if(!isOk()) return;
     qDebug() << "save record";
+
+    //end
+    clearLineEditors();
 }

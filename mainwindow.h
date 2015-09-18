@@ -32,7 +32,9 @@ public:
 
     bool databaseTest();
     bool connectDatabase();
+    bool isOk();
     void appendData(QTableView *tableView, QString qsql);
+    void clearLineEditors();
 
     QString serverIp;
 
