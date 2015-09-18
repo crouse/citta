@@ -203,3 +203,9 @@ void MainWindow::on_actionSave_triggered()
         return;
     }
 }
+
+void MainWindow::on_pushButtonSave_clicked()
+{
+    // [tbd]
+    qDebug() << "save record";
+}
