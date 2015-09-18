@@ -213,6 +213,28 @@ bool MainWindow::isOk()
 
 }
 
+bool MainWindow::isChinese(QString name)
+{
+    int count = name.count();
+    for (int i = 0; i < count; i++) {
+        QChar ch = name.at(i);
+        ushort unicode = ch.unicode();
+        if (unicode >= 0x4E00 && unicode <= 0x9FA5)
+            return true;
+    }
+
+    return false;
+}
+
+QString MainWindow::makeFname(QString name)
+{
+    if (!isChinese(name)) {
+        return QString("贤善");
+    }
+
+    return QString("贤%1").arg(name[1]);
+}
+
 void MainWindow::clearLineEditors()
 {
     ui->lineEditGender->clear();
@@ -237,3 +259,18 @@ void MainWindow::on_pushButtonSave_clicked()
     //end
     clearLineEditors();
 }
+
+bool MainWindow::updateZen()
+{
+    QString name = ui->lineEditName->text();
+    QString phone = ui->lineEditPhone->text();
+    QString gender = ui->lineEditGender->text();
+}
+
+
+
+
+
+
+
+

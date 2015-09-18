@@ -33,8 +33,11 @@ public:
     bool databaseTest();
     bool connectDatabase();
     bool isOk();
+    bool isChinese(QString name);
+    bool updateZen();
     void appendData(QTableView *tableView, QString qsql);
     void clearLineEditors();
+    QString makeFname(QString name);
 
     QString serverIp;
 
