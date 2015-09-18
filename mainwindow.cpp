@@ -265,6 +265,30 @@ void MainWindow::on_pushButtonSave_clicked()
     clearLineEditors();
 }
 
+bool MainWindow::insertRow(QString name, QString phone, QString gender)
+{
+    QString table;
+    if (gender == "男")
+        table = "zen_male";
+    else
+        table = "zen_female";
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO `zen_male` (`name`, `phone_num`, `gender`) "
+                  "VALUES (:name, :phone, :gender)"
+                  );
+    query.bindValue(":table", "zen_male");
+    query.bindValue(":name", name);
+    query.bindValue(":phone", phone);
+    query.bindValue(":gender", gender);
+    query.exec();
+    qDebug() << query.lastQuery();
+    qDebug() << query.lastError().text();
+    qDebug() << "last insert id";
+    qDebug() << query.lastInsertId().toInt();
+    return true;
+}
+
 bool MainWindow::updateZen()
 {
     QString name = ui->lineEditName->text();
@@ -284,9 +308,12 @@ bool MainWindow::updateZen()
 
     if (rowCount) {
         ui->tableViewSearch->show();
-        QMessageBox::information(this, "已在库中", "未实现");
+        QMessageBox::information(this, "已在库中", "修改未实现");
+        ui->tableViewSearch->hide(); // will remove tbd
         return true;
     }
+
+    insertRow(name, phone, gender);
     return true;
 }
 
@@ -305,9 +332,11 @@ void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos
     qDebug() << name << phone;
     popMenu->addAction(ui->actionModifyNameOrPhone);
     popMenu->exec(QCursor::pos());
+    // tbd
 }
 
 void MainWindow::on_actionModifyNameOrPhone_triggered()
 {
     qDebug() << "on_actionModifyNameOrPhone_triggered()";
+    //tbd
 }

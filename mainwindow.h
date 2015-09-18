@@ -35,6 +35,7 @@ public:
     bool connectDatabase();
     bool isOk();
     bool isChinese(QString name);
+    bool insertRow(QString name, QString phone, QString gender);
     bool updateZen();
     int appendData(QTableView *tableView, QString qsql);
     void clearLineEditors();
