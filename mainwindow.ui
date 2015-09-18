@@ -64,10 +64,21 @@
        </layout>
       </item>
       <item>
-       <widget class="QTableView" name="tableViewAdd"/>
+       <widget class="QTableView" name="tableViewAdd">
+        <property name="font">
+         <font>
+          <family>SimHei</family>
+         </font>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QTableView" name="tableViewSearch">
+        <property name="font">
+         <font>
+          <family>SimHei</family>
+         </font>
+        </property>
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;查询窗口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>

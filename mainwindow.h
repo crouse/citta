@@ -39,6 +39,7 @@ public:
 private slots:
     void searchInfo();
     void setServerAddr();
+    void afterLineEditorEditorPressed();
 
     void on_actionDb_triggered();
 

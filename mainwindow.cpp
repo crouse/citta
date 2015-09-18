@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
         lineEditEditor->setFixedSize(100, 20);
         lineEditEditor->setStyleSheet("border-radius: 5px; background: yellow");
         lineEditEditor->setPlaceholderText(" 编辑人必填");
+        connect(lineEditEditor, SIGNAL(returnPressed()), this, SLOT(afterLineEditorEditorPressed()));
         ui->mainToolBar->addWidget(lineEditEditor);
     }
 
@@ -88,6 +89,18 @@ void MainWindow::setServerAddr()
     serverIp = lineEditConfig->text();
     qDebug() << "serverIp: " + serverIp;
     lineEditConfig->setReadOnly(true);
+}
+
+void MainWindow::afterLineEditorEditorPressed()
+{
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_male` WHERE editor = '%1' "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_female` WHERE editor = '%1' "
+                           ).arg(lineEditEditor->text());
+
+    appendData(ui->tableViewAdd, qsql);
+
 }
 
 bool MainWindow::databaseTest()
@@ -148,7 +161,13 @@ void MainWindow::on_actionDb_triggered()
    ui->actionConfig->setDisabled(true);
    connectDatabase();
 
-   appendData(ui->tableViewAdd, "select name, fname, phone_num, receipt, code from zen_male");
+   QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                          " FROM `zen_male` WHERE editor = '%1' "
+                          " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                          " FROM `zen_female` WHERE editor = '%1' "
+                          ).arg(lineEditEditor->text());
+
+   appendData(ui->tableViewAdd, qsql);
 }
 
 void MainWindow::on_actionConfig_triggered()
