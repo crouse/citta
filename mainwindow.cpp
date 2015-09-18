@@ -203,6 +203,12 @@ bool MainWindow::isOk()
         return false;
     }
 
+
+    if (ui->lineEditGender->text().isEmpty()) {
+        QMessageBox::information(this, "姓别不能为空", "请写入性别：男 或 女");
+        return false;
+    }
+
     return true;
 
 }
