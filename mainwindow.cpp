@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     /* init global parameters */
     serverIp = "192.168.31.5";
+    lastMaleCode = 12933; // tbd, should read from database
+    lastFemaleCode = 20000;
     /* search lineEdit */
     {
         lineEditSearch = new QLineEdit;
@@ -236,7 +238,8 @@ QString MainWindow::makeFname(QString name)
         return QString("贤善");
     }
 
-    return QString("贤%1").arg(name[1]);
+    int order = name.length() - 1;
+    return QString("贤%1").arg(name[order]);
 }
 
 void MainWindow::clearLineEditors()
@@ -268,25 +271,63 @@ void MainWindow::on_pushButtonSave_clicked()
 bool MainWindow::insertRow(QString name, QString phone, QString gender)
 {
     QString table;
-    if (gender == "男")
-        table = "zen_male";
-    else
-        table = "zen_female";
+    QString codeHeader;
+    QString editor;
+    char receiptHeader;
+    int lastCode;
+
+    editor = lineEditEditor->text().trimmed();
+
+    if (gender == "男") {
+        qDebug() << gender;
+        table = QString("zen_male");
+        codeHeader = QString("A00000");
+        receiptHeader = 'A';
+        lastCode = lastMaleCode;
+    } else {
+        table = QString("zen_female");
+        codeHeader = QString("B00000");
+        receiptHeader = 'B';
+        lastCode = lastFemaleCode;
+    }
 
     QSqlQuery query;
-    query.prepare("INSERT INTO `zen_male` (`name`, `phone_num`, `gender`) "
-                  "VALUES (:name, :phone, :gender)"
-                  );
-    query.bindValue(":table", "zen_male");
-    query.bindValue(":name", name);
-    query.bindValue(":phone", phone);
-    query.bindValue(":gender", gender);
-    query.exec();
-    qDebug() << query.lastQuery();
-    qDebug() << query.lastError().text();
-    qDebug() << "last insert id";
-    qDebug() << query.lastInsertId().toInt();
-    return true;
+    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`) "
+                          " VALUES ('%2', '%3', '%4', '%5') "
+                ).arg(table, name, phone, gender, editor);
+
+    query.exec(sql);
+
+    int lastInsertId = query.lastInsertId().toInt();
+    QString code = QString("%1%2").arg(codeHeader).arg(lastInsertId + lastCode);
+
+    QString receipt;
+    receipt.sprintf("%c%03d", receiptHeader, lastInsertId);
+
+    QString fname = makeFname(name);
+
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_male` WHERE editor = '%1' "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_female` WHERE editor = '%1' "
+                           ).arg(editor);
+    qDebug() << qsql;
+
+    updateReceiptCodeFnameById(table, lastInsertId, receipt, code, fname);
+    appendData(ui->tableViewAdd, qsql);
+
+    qDebug() << code << receipt << fname;
+    return true; // tbd
+}
+
+int MainWindow::updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname)
+{
+    QSqlQuery query;
+    QString sql = QString(" UPDATE `%1` SET `receipt` = '%2', `code` = '%3', `fname` = '%4' WHERE `id` = '%5' ")
+            .arg(table).arg(receipt).arg(code).arg(fname).arg(id);
+
+    query.exec(sql);
+    return query.lastInsertId().toInt();
 }
 
 bool MainWindow::updateZen()

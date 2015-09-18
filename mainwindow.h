@@ -31,11 +31,15 @@ public:
     QStandardItemModel *viewModelAdd;
     QStandardItemModel *viewModelSearch;
 
+    int lastMaleCode;
+    int lastFemaleCode;
+
     bool databaseTest();
     bool connectDatabase();
     bool isOk();
     bool isChinese(QString name);
     bool insertRow(QString name, QString phone, QString gender);
+    int updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname);
     bool updateZen();
     int appendData(QTableView *tableView, QString qsql);
     void clearLineEditors();
