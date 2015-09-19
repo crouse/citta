@@ -244,7 +244,7 @@ QString MainWindow::makeFname(QString name)
 
 void MainWindow::clearLineEditors()
 {
-    ui->lineEditGender->clear();
+    //ui->lineEditGender->clear();
     ui->lineEditName->clear();
     ui->lineEditPhone->clear();
 }
@@ -255,17 +255,19 @@ void MainWindow::on_actionSave_triggered()
 
 
     // end
+    updateZen();
     clearLineEditors();
+    ui->lineEditName->setFocus();
 }
 
 void MainWindow::on_pushButtonSave_clicked()
 {
     if(!isOk()) return;
-    qDebug() << "save record";
 
     //end
     updateZen();
     clearLineEditors();
+    ui->lineEditName->setFocus();
 }
 
 bool MainWindow::insertRow(QString name, QString phone, QString gender)
