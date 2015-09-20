@@ -209,14 +209,14 @@ bool MainWindow::isOk()
         return false;
     }
 
+    bool checked = ui->radioButtonFemale->isChecked() || ui->radioButtonMale->isChecked();
 
-    if (ui->lineEditGender->text().isEmpty()) {
-        QMessageBox::information(this, "姓别不能为空", "请写入性别：男 或 女");
+    if (!checked) {
+        QMessageBox::information(this, "", "请选择性别");
         return false;
     }
 
     return true;
-
 }
 
 bool MainWindow::isChinese(QString name)
@@ -244,9 +244,16 @@ QString MainWindow::makeFname(QString name)
 
 void MainWindow::clearLineEditors()
 {
-    //ui->lineEditGender->clear();
     ui->lineEditName->clear();
     ui->lineEditPhone->clear();
+    if (ui->radioButtonFemale->isChecked()) {
+        ui->radioButtonFemale->setChecked(false);
+        qDebug() << "Female clear";
+    }
+    if (ui->radioButtonMale->isChecked()) {
+        ui->radioButtonMale->setChecked(false);
+        qDebug() << "Male clear";
+    }
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -336,9 +343,12 @@ bool MainWindow::updateZen()
 {
     QString name = ui->lineEditName->text();
     QString phone = ui->lineEditPhone->text();
-    QString gender = ui->lineEditGender->text();
 
-    qDebug() << "here";
+    QString gender;
+    ui->radioButtonMale->isChecked()? gender = QString("男"): gender = QString("女");
+    ui->radioButtonFemale->isChecked()? gender = QString("女"): gender = QString("男");
+
+    qDebug() << gender;
 
     QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                            " FROM `zen_male` "
@@ -382,4 +392,14 @@ void MainWindow::on_actionModifyNameOrPhone_triggered()
 {
     qDebug() << "on_actionModifyNameOrPhone_triggered()";
     //tbd
+}
+
+void MainWindow::on_radioButtonMale_clicked()
+{
+    ui->radioButtonFemale->setChecked(false);
+}
+
+void MainWindow::on_radioButtonFemale_clicked()
+{
+    ui->radioButtonMale->setChecked(false);
 }

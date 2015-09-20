@@ -49,15 +49,34 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEditGender">
-          <property name="font">
-           <font>
-            <family>YouYuan</family>
-            <pointsize>13</pointsize>
-           </font>
+         <widget class="QRadioButton" name="radioButtonMale">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ctrl + M&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
-          <property name="placeholderText">
-           <string>性别：</string>
+          <property name="text">
+           <string>男</string>
+          </property>
+          <property name="shortcut">
+           <string>Meta+M</string>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonFemale">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;CTRL + F&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>女</string>
+          </property>
+          <property name="shortcut">
+           <string>Meta+F</string>
+          </property>
+          <property name="autoExclusive">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -76,7 +95,7 @@
             <normaloff>:/pics/save.png</normaloff>:/pics/save.png</iconset>
           </property>
           <property name="shortcut">
-           <string>Meta+S</string>
+           <string>Meta+Return</string>
           </property>
           <property name="flat">
            <bool>false</bool>

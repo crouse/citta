@@ -65,6 +65,10 @@ private slots:
 
     void on_actionModifyNameOrPhone_triggered();
 
+    void on_radioButtonMale_clicked();
+
+    void on_radioButtonFemale_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
