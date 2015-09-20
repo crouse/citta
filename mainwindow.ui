@@ -90,10 +90,6 @@
           <property name="text">
            <string>保存</string>
           </property>
-          <property name="icon">
-           <iconset resource="pic.qrc">
-            <normaloff>:/pics/save.png</normaloff>:/pics/save.png</iconset>
-          </property>
           <property name="shortcut">
            <string>Meta+Return</string>
           </property>
@@ -143,7 +139,7 @@
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="toolButtonStyle">
-    <enum>Qt::ToolButtonIconOnly</enum>
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -218,6 +214,15 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>lineEditPhone</tabstop>
+  <tabstop>radioButtonMale</tabstop>
+  <tabstop>radioButtonFemale</tabstop>
+  <tabstop>pushButtonSave</tabstop>
+  <tabstop>tableViewSearch</tabstop>
+  <tabstop>tableViewAdd</tabstop>
+ </tabstops>
  <resources>
   <include location="pic.qrc"/>
  </resources>
