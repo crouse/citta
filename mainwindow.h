@@ -69,6 +69,8 @@ private slots:
 
     void on_radioButtonFemale_clicked();
 
+    void on_tableViewAdd_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;

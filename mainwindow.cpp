@@ -403,3 +403,25 @@ void MainWindow::on_radioButtonFemale_clicked()
 {
     ui->radioButtonMale->setChecked(false);
 }
+
+void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
+{
+    int rowNum = ui->tableViewAdd->verticalHeader()->logicalIndexAt(pos); // Get line order
+    int colNum = ui->tableViewAdd->horizontalHeader()->logicalIndexAt(pos);
+    if (rowNum < 0 || colNum < 0) return;
+    if (colNum > 2) return;
+
+    QMenu *popMenu = new QMenu(this);
+    QString name = viewModelAdd->index(rowNum, 0).data().toString();
+    QString phone = viewModelAdd->index(rowNum, 2).data().toString();
+    qDebug() << name << phone;
+    popMenu->addAction(ui->actionModifyNameOrPhone);
+    popMenu->exec(QCursor::pos());
+}
+
+
+
+
+
+
+
