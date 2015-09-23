@@ -121,7 +121,26 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayoutChange">
         <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QLineEdit" name="lineEditCname">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>YouYuan</family>
@@ -134,6 +153,12 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEditCfname">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>Yuanti SC</family>
@@ -146,6 +171,12 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEditCPhone">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>Yuanti SC</family>
@@ -158,18 +189,30 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonCancel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>Yuanti SC</family>
            </font>
           </property>
           <property name="text">
-           <string>取消</string>
+           <string>取消更改</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonSaveChange">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="font">
            <font>
             <family>Yuanti SC</family>
@@ -179,6 +222,19 @@
            <string>保存更改</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -222,6 +278,7 @@
    </attribute>
    <addaction name="actionDb"/>
    <addaction name="actionConfig"/>
+   <addaction name="actionQueryWindow"/>
    <addaction name="actionSave"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
@@ -286,6 +343,15 @@
    </property>
    <property name="toolTip">
     <string>修改</string>
+   </property>
+  </action>
+  <action name="actionQueryWindow">
+   <property name="icon">
+    <iconset resource="pic.qrc">
+     <normaloff>:/pics/see.png</normaloff>:/pics/see.png</iconset>
+   </property>
+   <property name="text">
+    <string>查询窗</string>
    </property>
   </action>
  </widget>

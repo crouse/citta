@@ -24,3 +24,6 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     pic.qrc
+
+DISTFILES += \
+    pics/see.png

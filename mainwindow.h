@@ -43,6 +43,7 @@ public:
     bool updateZen();
     int appendData(QTableView *tableView, QString qsql);
     void clearLineEditors();
+    void hideCwidgets();
 
     QString makeFname(QString name);
 
@@ -70,6 +71,12 @@ private slots:
     void on_radioButtonFemale_clicked();
 
     void on_tableViewAdd_customContextMenuRequested(const QPoint &pos);
+
+    void on_pushButtonCancel_clicked();
+
+    void on_pushButtonSaveChange_clicked();
+
+    void on_actionQueryWindow_triggered();
 
 private:
     Ui::MainWindow *ui;

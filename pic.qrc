@@ -4,5 +4,6 @@
         <file>pics/db.png</file>
         <file>pics/save.png</file>
         <file>pics/search.png</file>
+        <file>pics/see.png</file>
     </qresource>
 </RCC>

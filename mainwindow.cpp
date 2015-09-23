@@ -50,12 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
     /* hide widgets */
     {
         ui->tableViewSearch->hide();
-        ui->lineEditCfname->hide();
-        ui->lineEditCname->hide();
-        ui->lineEditCPhone->hide();
-        ui->pushButtonSaveChange->hide();
-        ui->pushButtonCancel->hide();
-    }
+        hideCwidgets();
+   }
 
     /* table view setting */
     {
@@ -377,7 +373,7 @@ bool MainWindow::updateZen()
     if (rowCount) {
         ui->tableViewSearch->show();
         QMessageBox::information(this, "已在库中", "修改未实现");
-        ui->tableViewSearch->hide(); // will remove tbd
+        //ui->tableViewSearch->hide(); // will remove tbd
         return true;
     }
 
@@ -437,32 +433,60 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
     popMenu->exec(QCursor::pos());
 
     ui->pushButtonSaveChange->show();
+    ui->pushButtonCancel->show();
     switch(colNum) {
     case 0: // name
         ui->lineEditCname->show();
         qDebug() << "name " << name;
         ui->lineEditCname->setText(name);
         ui->lineEditCname->setFocus();
-        if (!ui->lineEditCfname->isHidden()) ui->lineEditCfname->hide();
+        if (!ui->lineEditCname->isHidden()) ui->lineEditCfname->hide();
         if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
         break;
     case 1: // fname
         ui->lineEditCfname->show();
         ui->lineEditCfname->setText(fname);
+        ui->lineEditCfname->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
         if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
         break;
     case 2: // phone
+        ui->lineEditCPhone->show();
+        ui->lineEditCPhone->setText(phone);
+        ui->lineEditCPhone->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
         if (!ui->lineEditCfname->isHidden()) ui->lineEditCfname->hide();
-        ui->lineEditCPhone->show();
         break;
     }
 }
 
+void MainWindow::hideCwidgets()
+{
+    ui->lineEditCname->clear();
+    ui->lineEditCfname->clear();
+    ui->lineEditCPhone->clear();
+
+    ui->lineEditCname->hide();
+    ui->lineEditCfname->hide();
+    ui->lineEditCPhone->hide();
+    ui->pushButtonCancel->hide();
+    ui->pushButtonSaveChange->hide();
+}
+
+void MainWindow::on_pushButtonCancel_clicked()
+{
+    hideCwidgets();
+}
 
 
+void MainWindow::on_pushButtonSaveChange_clicked()
+{
+    // hide at end
+    hideCwidgets();
+}
 
-
-
-
+void MainWindow::on_actionQueryWindow_triggered()
+{
+    if (ui->tableViewSearch->isHidden()) ui->tableViewSearch->show();
+    else ui->tableViewSearch->hide();
+}
