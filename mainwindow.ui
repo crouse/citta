@@ -119,6 +119,70 @@
        </widget>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayoutChange">
+        <item>
+         <widget class="QLineEdit" name="lineEditCname">
+          <property name="font">
+           <font>
+            <family>YouYuan</family>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>姓名：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditCfname">
+          <property name="font">
+           <font>
+            <family>Yuanti SC</family>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>法名：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditCPhone">
+          <property name="font">
+           <font>
+            <family>Yuanti SC</family>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>手机号：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonCancel">
+          <property name="font">
+           <font>
+            <family>Yuanti SC</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>取消</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonSaveChange">
+          <property name="font">
+           <font>
+            <family>Yuanti SC</family>
+           </font>
+          </property>
+          <property name="text">
+           <string>保存更改</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QTableView" name="tableViewSearch">
         <property name="font">
          <font>
@@ -218,7 +282,10 @@
   </action>
   <action name="actionModifyNameOrPhone">
    <property name="text">
-    <string>修改姓名、手机号</string>
+    <string>修改</string>
+   </property>
+   <property name="toolTip">
+    <string>修改</string>
    </property>
   </action>
  </widget>

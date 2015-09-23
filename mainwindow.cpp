@@ -50,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
     /* hide widgets */
     {
         ui->tableViewSearch->hide();
+        ui->lineEditCfname->hide();
+        ui->lineEditCname->hide();
+        ui->lineEditCPhone->hide();
+        ui->pushButtonSaveChange->hide();
+        ui->pushButtonCancel->hide();
     }
 
     /* table view setting */
@@ -74,7 +79,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
 
-    model = new QSqlQueryModel;
 }
 
 MainWindow::~MainWindow()
@@ -141,6 +145,7 @@ bool MainWindow::connectDatabase()
 
 int MainWindow::appendData(QTableView *tableView, QString qsql)
 {
+    model = new QSqlQueryModel();
     model->setQuery(qsql);
     model->setHeaderData(0, Qt::Horizontal, "姓名");
     model->setHeaderData(1, Qt::Horizontal, "法名");
@@ -422,11 +427,37 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
     if (colNum > 2) return;
 
     QMenu *popMenu = new QMenu(this);
-    QString name = viewModelAdd->index(rowNum, 0).data().toString();
-    QString phone = viewModelAdd->index(rowNum, 2).data().toString();
-    qDebug() << name << phone;
+    QString name = model->index(rowNum, 0).data().toString();
+    QString fname = model->index(rowNum, 1).data().toString();
+    QString phone = model->index(rowNum, 2).data().toString();
+    QString receipt = model->index(rowNum, 3).data().toString();
+    qDebug() << name << phone << receipt;
+    qDebug() << rowNum << colNum;
     popMenu->addAction(ui->actionModifyNameOrPhone);
     popMenu->exec(QCursor::pos());
+
+    ui->pushButtonSaveChange->show();
+    switch(colNum) {
+    case 0: // name
+        ui->lineEditCname->show();
+        qDebug() << "name " << name;
+        ui->lineEditCname->setText(name);
+        ui->lineEditCname->setFocus();
+        if (!ui->lineEditCfname->isHidden()) ui->lineEditCfname->hide();
+        if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
+        break;
+    case 1: // fname
+        ui->lineEditCfname->show();
+        ui->lineEditCfname->setText(fname);
+        if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
+        if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
+        break;
+    case 2: // phone
+        if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
+        if (!ui->lineEditCfname->isHidden()) ui->lineEditCfname->hide();
+        ui->lineEditCPhone->show();
+        break;
+    }
 }
 
 
