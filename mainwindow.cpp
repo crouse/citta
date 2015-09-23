@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     /* init global parameters */
-    serverIp = "192.168.31.5";
+    serverIp = "192.168.1.5";
     lastMaleCode = 12933; // tbd, should read from database
     lastFemaleCode = 20000;
     /* search lineEdit */
@@ -29,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
         lineEditConfig = new QLineEdit;
         lineEditConfig->setFixedSize(100, 20);
         lineEditConfig->setStyleSheet("border-radius: 5px;");
-        lineEditConfig->setPlaceholderText(serverIp);
+        lineEditConfig->setPlaceholderText("服务器地址");
+        lineEditConfig->setText(serverIp);
         lineEditConfig->setReadOnly(true);
         connect(lineEditConfig, SIGNAL(returnPressed()), this, SLOT(setServerAddr()));
         ui->mainToolBar->addWidget(lineEditConfig);
@@ -87,7 +88,7 @@ void MainWindow::searchInfo()
 
 void MainWindow::setServerAddr()
 {
-    serverIp = lineEditConfig->text();
+    serverIp = lineEditConfig->text().trimmed();
     qDebug() << "serverIp: " + serverIp;
     lineEditConfig->setReadOnly(true);
 }
@@ -108,6 +109,7 @@ bool MainWindow::databaseTest()
 {
     bool ret;
     QTcpSocket tsock;
+    qDebug() << "Server IP: " << serverIp;
     tsock.connectToHost(serverIp, 3306);
     ret = tsock.waitForConnected(1000);
     if (ret) tsock.close();
@@ -127,7 +129,9 @@ bool MainWindow::connectDatabase()
         return false;
     }
 
-    qDebug() << QString("db status: %1 ").arg(db.open());
+    lineEditConfig->setReadOnly(true);
+    lineEditEditor->setReadOnly(true);
+    qDebug() << "Db connect status: " << db.open();
 
     return true;
 }
@@ -152,6 +156,7 @@ int MainWindow::appendData(QTableView *tableView, QString qsql)
 
 void MainWindow::on_actionDb_triggered()
 {
+   serverIp = lineEditConfig->text().trimmed();
    if (lineEditEditor->text().isEmpty()) {
        QMessageBox::information(this, "编辑人不能为空", "请输入编辑人姓名");
        return;
@@ -179,11 +184,14 @@ void MainWindow::on_actionDb_triggered()
 void MainWindow::on_actionConfig_triggered()
 {
     if (lineEditConfig->isReadOnly()) {
-        lineEditConfig->setReadOnly(false);
         lineEditConfig->setEnabled(true);
+        lineEditConfig->setReadOnly(false);
+        lineEditConfig->clear();
         qDebug() << "on_actionConfig_triggered()";
+        return;
     }
 
+    qDebug() << "lineEditConfig->isEnabled() " << lineEditConfig->isEnabled();
     lineEditConfig->setFocus();
 }
 
