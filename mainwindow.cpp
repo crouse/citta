@@ -72,6 +72,9 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->tableViewSearch->setModel(viewModelSearch);
         ui->tableViewSearch->horizontalHeader()->setStretchLastSection(true);
     }
+
+
+    model = new QSqlQueryModel;
 }
 
 MainWindow::~MainWindow()
@@ -138,7 +141,6 @@ bool MainWindow::connectDatabase()
 
 int MainWindow::appendData(QTableView *tableView, QString qsql)
 {
-    model = new QSqlQueryModel;
     model->setQuery(qsql);
     model->setHeaderData(0, Qt::Horizontal, "姓名");
     model->setHeaderData(1, Qt::Horizontal, "法名");
