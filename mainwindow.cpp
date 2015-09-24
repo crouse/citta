@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     serverIp = "192.168.1.5";
     lastMaleCode = 12933; // tbd, should read from database
     lastFemaleCode = 20000;
+    g_receipt = "";
     /* search lineEdit */
     {
         lineEditSearch = new QLineEdit;
@@ -288,6 +289,25 @@ void MainWindow::on_pushButtonSave_clicked()
     ui->lineEditName->setFocus();
 }
 
+bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString fname)
+{
+    QString table;
+    if (receipt.at(0) == QChar('A'))
+        table = QString("zen_male");
+    else
+        table = QString("zen_female");
+
+    QString upsql = QString("UPDATE %1 SET `name` = '%2', `phone_num` = '%3', `fname` = '%4' "
+                            " WHERE `receipt` = '%5' ")
+            .arg(table).arg(name).arg(phone).arg(fname).arg(receipt);
+    qDebug() << "update sql " << upsql;
+    QSqlQuery query;
+    query.exec(upsql);
+    qDebug() << query.lastError().text();
+    g_receipt = "";
+    return true;
+}
+
 bool MainWindow::insertRow(QString name, QString phone, QString gender)
 {
     QString table;
@@ -377,7 +397,7 @@ bool MainWindow::updateZen()
         return true;
     }
 
-    insertRow(name, phone, gender);
+    insertRow(name, phone, gender); // will refresh tableViewAdd
     return true;
 }
 
@@ -427,6 +447,10 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
     QString fname = model->index(rowNum, 1).data().toString();
     QString phone = model->index(rowNum, 2).data().toString();
     QString receipt = model->index(rowNum, 3).data().toString();
+
+    // set a global var
+    g_receipt = receipt;
+
     qDebug() << name << phone << receipt;
     qDebug() << rowNum << colNum;
     popMenu->addAction(ui->actionModifyNameOrPhone);
@@ -434,25 +458,26 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
 
     ui->pushButtonSaveChange->show();
     ui->pushButtonCancel->show();
+    ui->lineEditCname->setText(name);
+    ui->lineEditCfname->setText(fname);
+    ui->lineEditCPhone->setText(phone);
+
     switch(colNum) {
     case 0: // name
         ui->lineEditCname->show();
         qDebug() << "name " << name;
-        ui->lineEditCname->setText(name);
         ui->lineEditCname->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCfname->hide();
         if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
         break;
     case 1: // fname
         ui->lineEditCfname->show();
-        ui->lineEditCfname->setText(fname);
         ui->lineEditCfname->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
         if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
         break;
     case 2: // phone
         ui->lineEditCPhone->show();
-        ui->lineEditCPhone->setText(phone);
         ui->lineEditCPhone->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
         if (!ui->lineEditCfname->isHidden()) ui->lineEditCfname->hide();
@@ -481,8 +506,25 @@ void MainWindow::on_pushButtonCancel_clicked()
 
 void MainWindow::on_pushButtonSaveChange_clicked()
 {
+    if (g_receipt == "") return;
     // hide at end
+    //QString receipt, QString name, QString phone, QString fname
+    updateRow(g_receipt,
+              ui->lineEditCname->text().trimmed(),
+              ui->lineEditCPhone->text().trimmed(),
+              ui->lineEditCfname->text().trimmed()
+              );
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_male` WHERE editor = '%1' "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_female` WHERE editor = '%1' "
+                           ).arg(lineEditEditor->text().trimmed());
+    qDebug() << qsql;
+
+    appendData(ui->tableViewAdd, qsql);
+
     hideCwidgets();
+    g_receipt = "";
 }
 
 void MainWindow::on_actionQueryWindow_triggered()

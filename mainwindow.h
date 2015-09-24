@@ -39,6 +39,7 @@ public:
     bool isOk();
     bool isChinese(QString name);
     bool insertRow(QString name, QString phone, QString gender);
+    bool updateRow(QString receipt, QString name, QString phone, QString fname);
     int updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname);
     bool updateZen();
     int appendData(QTableView *tableView, QString qsql);
@@ -48,6 +49,7 @@ public:
     QString makeFname(QString name);
 
     QString serverIp;
+    QString g_receipt;
 
 private slots:
     void searchInfo();
