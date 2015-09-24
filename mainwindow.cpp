@@ -103,7 +103,7 @@ void MainWindow::afterLineEditorEditorPressed()
                            " FROM `zen_male` WHERE editor = '%1' "
                            " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                            " FROM `zen_female` WHERE editor = '%1' "
-                           ).arg(lineEditEditor->text());
+                           ).arg(lineEditEditor->text().trimmed());
 
     appendData(ui->tableViewAdd, qsql);
 
@@ -161,7 +161,7 @@ int MainWindow::appendData(QTableView *tableView, QString qsql)
 void MainWindow::on_actionDb_triggered()
 {
    serverIp = lineEditConfig->text().trimmed();
-   if (lineEditEditor->text().isEmpty()) {
+   if (lineEditEditor->text().trimmed().isEmpty()) {
        QMessageBox::information(this, "编辑人不能为空", "请输入编辑人姓名");
        return;
    }
@@ -180,7 +180,7 @@ void MainWindow::on_actionDb_triggered()
                           " FROM `zen_male` WHERE editor = '%1' "
                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                           " FROM `zen_female` WHERE editor = '%1' "
-                          ).arg(lineEditEditor->text());
+                          ).arg(lineEditEditor->text().trimmed());
 
    appendData(ui->tableViewAdd, qsql);
 }
@@ -211,12 +211,12 @@ bool MainWindow::isOk()
        return false;
     }
 
-    if (lineEditEditor->text().isEmpty()) {
+    if (lineEditEditor->text().trimmed().isEmpty()) {
         QMessageBox::information(this, "编辑人不能为空", "请设置编辑人");
         return false;
     }
 
-    if (ui->lineEditName->text().isEmpty()) {
+    if (ui->lineEditName->text().trimmed().isEmpty()) {
         QMessageBox::information(this, "姓名不能为空", "请写入姓名");
         return false;
     }
@@ -372,8 +372,8 @@ int MainWindow::updateReceiptCodeFnameById(QString table, int id, QString receip
 
 bool MainWindow::updateZen()
 {
-    QString name = ui->lineEditName->text();
-    QString phone = ui->lineEditPhone->text();
+    QString name = ui->lineEditName->text().trimmed();
+    QString phone = ui->lineEditPhone->text().trimmed();
 
     QString gender;
     ui->radioButtonMale->isChecked()? gender = QString("男"): gender = QString("女");
