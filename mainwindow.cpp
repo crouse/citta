@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QLabel>
+#include <QDateTime>
 #define DB_NAME "citta"
 #define DB_PASS "123456"
 #define DB_USER "citta"
@@ -12,9 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     /* init global parameters */
     serverIp = "192.168.1.5";
-    lastMaleCode = 12933; // tbd, should read from database
-    lastFemaleCode = 20000;
     g_receipt = "";
+
     /* search lineEdit */
     {
         lineEditSearch = new QLineEdit;
@@ -92,13 +92,11 @@ MainWindow::~MainWindow()
 void MainWindow::searchInfo()
 {
     QString searchText = lineEditSearch->text();
-    qDebug() << "search text: " + searchText;
 }
 
 void MainWindow::setServerAddr()
 {
     serverIp = lineEditConfig->text().trimmed();
-    qDebug() << "serverIp: " + serverIp;
     lineEditConfig->setReadOnly(true);
 }
 
@@ -118,11 +116,19 @@ bool MainWindow::databaseTest()
 {
     bool ret;
     QTcpSocket tsock;
-    qDebug() << "Server IP: " << serverIp;
     tsock.connectToHost(serverIp, 3306);
     ret = tsock.waitForConnected(1000);
     if (ret) tsock.close();
     return ret;
+}
+
+bool MainWindow::closeDatabase()
+{
+   db.close();
+   lineEditConfig->setReadOnly(false);
+   ui->actionDb->setEnabled(true);
+   ui->actionConfig->setEnabled(true);
+   return true;
 }
 
 bool MainWindow::connectDatabase()
@@ -140,7 +146,6 @@ bool MainWindow::connectDatabase()
 
     lineEditConfig->setReadOnly(true);
     lineEditEditor->setReadOnly(true);
-    qDebug() << "Db connect status: " << db.open();
 
     return true;
 }
@@ -172,13 +177,14 @@ void MainWindow::on_actionDb_triggered()
 
    bool conStatus = databaseTest();
    if (conStatus == false) {
-       qDebug() << "Can not connect to mysql server";
        QMessageBox::critical(this, "无法连接数据库", "请设置正确的数据库地址以及端口.");
        return;
    }
    ui->actionDb->setDisabled(true);
    ui->actionConfig->setDisabled(true);
    connectDatabase();
+
+   getLastCode();
 
    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                           " FROM `zen_male` WHERE editor = '%1' "
@@ -195,11 +201,9 @@ void MainWindow::on_actionConfig_triggered()
         lineEditConfig->setEnabled(true);
         lineEditConfig->setReadOnly(false);
         lineEditConfig->clear();
-        qDebug() << "on_actionConfig_triggered()";
         return;
     }
 
-    qDebug() << "lineEditConfig->isEnabled() " << lineEditConfig->isEnabled();
     lineEditConfig->setFocus();
 }
 
@@ -264,11 +268,9 @@ void MainWindow::clearLineEditors()
     ui->lineEditPhone->clear();
     if (ui->radioButtonFemale->isChecked()) {
         ui->radioButtonFemale->setChecked(false);
-        qDebug() << "Female clear";
     }
     if (ui->radioButtonMale->isChecked()) {
         ui->radioButtonMale->setChecked(false);
-        qDebug() << "Male clear";
     }
 }
 
@@ -276,8 +278,6 @@ void MainWindow::on_actionSave_triggered()
 {
     if(!isOk()) return;
 
-
-    // end
     updateZen();
     clearLineEditors();
     ui->lineEditName->setFocus();
@@ -287,7 +287,6 @@ void MainWindow::on_pushButtonSave_clicked()
 {
     if(!isOk()) return;
 
-    //end
     updateZen();
     clearLineEditors();
     ui->lineEditName->setFocus();
@@ -304,10 +303,9 @@ bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString
     QString upsql = QString("UPDATE %1 SET `name` = '%2', `phone_num` = '%3', `fname` = '%4' "
                             " WHERE `receipt` = '%5' ")
             .arg(table).arg(name).arg(phone).arg(fname).arg(receipt);
-    qDebug() << "update sql " << upsql;
+
     QSqlQuery query;
     query.exec(upsql);
-    qDebug() << query.lastError().text();
     return true;
 }
 
@@ -354,13 +352,11 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
                            " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                            " FROM `zen_female` WHERE editor = '%1' "
                            ).arg(editor);
-    qDebug() << qsql;
 
     updateReceiptCodeFnameById(table, lastInsertId, receipt, code, fname);
     appendData(ui->tableViewAdd, model, qsql);
 
-    qDebug() << code << receipt << fname;
-    return true; // tbd
+    return true;
 }
 
 int MainWindow::updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname)
@@ -406,7 +402,6 @@ bool MainWindow::updateZen()
 void MainWindow::on_actionModifyNameOrPhone_triggered()
 {
     qDebug() << "on_actionModifyNameOrPhone_triggered()";
-    //tbd
 }
 
 void MainWindow::on_radioButtonMale_clicked()
@@ -457,7 +452,6 @@ void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos
     QString phone = qmodel->index(rowNum, 2).data().toString();
     QString receipt = qmodel->index(rowNum, 3).data().toString();
     g_receipt = receipt;
-    qDebug() << "G_RECEIPT: " << g_receipt;
 
     QMenu *popMenu = new QMenu(this);
     popMenu->addAction(ui->actionModifyNameOrPhone);
@@ -487,7 +481,6 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
     QString receipt = model->index(rowNum, 3).data().toString();
     g_receipt = receipt;
 
-    // set a global var
     QMenu *popMenu = new QMenu(this);
     popMenu->addAction(ui->actionModifyNameOrPhone);
     popMenu->exec(QCursor::pos());
@@ -520,28 +513,15 @@ void MainWindow::on_pushButtonCancel_clicked()
     hideCwidgets();
 }
 
-
 void MainWindow::on_pushButtonSaveChange_clicked()
 {
     if (g_receipt == "") return;
-    // hide at end
-    //QString receipt, QString name, QString phone, QString fname
+
     updateRow(g_receipt,
               ui->lineEditCname->text().trimmed(),
               ui->lineEditCPhone->text().trimmed(),
               ui->lineEditCfname->text().trimmed()
               );
-    /*
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
-                           " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
-                           " FROM `zen_female` WHERE editor = '%1' "
-                           ).arg(lineEditEditor->text().trimmed());
-    qDebug() << qsql;
-
-    appendData(ui->tableViewAdd, model, qsql);
-    */
-
 
     QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                            " FROM `zen_male` WHERE editor = '%1' "
@@ -550,7 +530,6 @@ void MainWindow::on_pushButtonSaveChange_clicked()
                            ).arg(lineEditEditor->text().trimmed());
 
     appendData(ui->tableViewAdd, model, sql);
-    qDebug() << "A" << sql;
 
     QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                            " FROM `zen_male` WHERE `receipt` = '%1' "
@@ -558,7 +537,6 @@ void MainWindow::on_pushButtonSaveChange_clicked()
                            " FROM `zen_female` WHERE `receipt` = '%1' "
                            ).arg(g_receipt);
 
-    qDebug() << "B" << qsql;
     appendData(ui->tableViewSearch, qmodel, qsql);
 
 
@@ -571,3 +549,54 @@ void MainWindow::on_actionQueryWindow_triggered()
     if (ui->tableViewSearch->isHidden()) ui->tableViewSearch->show();
     else ui->tableViewSearch->hide();
 }
+
+void MainWindow::getLastCode()
+{
+    int size;
+    lastMaleCode = 0;
+    QString fahuiName;
+    QDateTime ndt;
+    QString dt = ndt.currentDateTime().date().toString("yyyy-MM-dd");
+    qDebug() << dt;
+
+    QString sql = QString(" SELECT `last_male_code`, `last_female_code`, `fahui_name` "
+                          " FROM `zen_config` "
+                          " WHERE `date` = '%1' ").arg(dt);
+    qDebug() << sql;
+    QSqlQuery query;
+    query.exec(sql);
+    qDebug() << query.lastError().text();
+    while(query.next()) {
+        lastMaleCode = query.value(0).toInt();
+        lastFemaleCode = query.value(1).toInt();
+        fahuiName = query.value(2).toString();
+    }
+
+    size = query.next();
+    if (lastMaleCode == 0) {
+        QMessageBox::information(this, "", "未设置皈依配置信息，请联系管理员");
+        closeDatabase();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

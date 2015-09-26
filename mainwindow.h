@@ -37,12 +37,14 @@ public:
 
     bool databaseTest();
     bool connectDatabase();
+    bool closeDatabase();
     bool isOk();
     bool isChinese(QString name);
     bool insertRow(QString name, QString phone, QString gender);
     bool updateRow(QString receipt, QString name, QString phone, QString fname);
     int updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname);
     bool updateZen();
+    void getLastCode(); // Get last biggest Guyi Code
     int appendData(QTableView *tableView, QSqlQueryModel *model, QString qsql);
     void clearLineEditors();
     void hideCwidgets();
