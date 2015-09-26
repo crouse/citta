@@ -303,6 +303,16 @@ void MainWindow::on_pushButtonSave_clicked()
     if(!isOk()) return;
 
     updateZen();
+    QString info = QString("  %1, %2, %3, %4, %5")
+            .arg(statusName, statusGender, statusReceipt, statusCode, statusPhone);
+    statusLabel->setText(info);
+
+    statusName = "";
+    statusGender = "";
+    statusReceipt = "";
+    statusCode = "";
+    statusPhone = "";
+
     clearLineEditors();
     ui->lineEditName->setFocus();
 }
@@ -369,6 +379,14 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
                            ).arg(editor);
 
     updateReceiptCodeFnameById(table, lastInsertId, receipt, code, fname);
+
+    // to show in status bar
+    statusName = name;
+    statusGender = gender;
+    statusReceipt = receipt;
+    statusCode = code;
+    statusPhone = phone;
+
     appendData(ui->tableViewAdd, model, qsql);
 
     return true;
@@ -591,7 +609,7 @@ void MainWindow::getLastCode()
         closeDatabase();
     }
 
-    statusLabel->setText(QString("    <请核对清楚：法会名称 %1, 上次男众最后皈依证件最大号: %2, 上次女众皈依证件最大号: %3>")
+    statusLabel->setText(QString("    <请核对清楚：法会名称: %1 男众起始皈依号: %2 女众起始皈依号 %3>")
                          .arg(fahuiName).arg(lastMaleCode).arg(lastFemaleCode));
 }
 

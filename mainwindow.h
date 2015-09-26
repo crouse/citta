@@ -35,6 +35,12 @@ public:
     int lastMaleCode;
     int lastFemaleCode;
 
+    QString statusName;
+    QString statusGender;
+    QString statusReceipt;
+    QString statusCode;
+    QString statusPhone;
+
     bool databaseTest();
     bool connectDatabase();
     bool closeDatabase();
