@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QLabel>
 #define DB_NAME "citta"
 #define DB_PASS "123456"
 #define DB_USER "citta"
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         ui->tableViewSearch->hide();
         hideCwidgets();
-   }
+    }
 
     /* table view setting */
     {
@@ -75,7 +76,11 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->tableViewSearch->horizontalHeader()->setStretchLastSection(true);
     }
 
+    statusLabel = new QLabel(this);
+    ui->statusBar->addWidget(statusLabel);
 
+    model = new QSqlQueryModel();
+    qmodel = new QSqlQueryModel();
 }
 
 MainWindow::~MainWindow()
@@ -105,7 +110,7 @@ void MainWindow::afterLineEditorEditorPressed()
                            " FROM `zen_female` WHERE editor = '%1' "
                            ).arg(lineEditEditor->text().trimmed());
 
-    appendData(ui->tableViewAdd, qsql);
+    appendData(ui->tableViewAdd, model, qsql);
 
 }
 
@@ -140,9 +145,8 @@ bool MainWindow::connectDatabase()
     return true;
 }
 
-int MainWindow::appendData(QTableView *tableView, QString qsql)
+int MainWindow::appendData(QTableView *tableView, QSqlQueryModel *model, QString qsql)
 {
-    model = new QSqlQueryModel();
     model->setQuery(qsql);
     model->setHeaderData(0, Qt::Horizontal, "姓名");
     model->setHeaderData(1, Qt::Horizontal, "法名");
@@ -182,7 +186,7 @@ void MainWindow::on_actionDb_triggered()
                           " FROM `zen_female` WHERE editor = '%1' "
                           ).arg(lineEditEditor->text().trimmed());
 
-   appendData(ui->tableViewAdd, qsql);
+   appendData(ui->tableViewAdd, model, qsql);
 }
 
 void MainWindow::on_actionConfig_triggered()
@@ -304,7 +308,6 @@ bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString
     QSqlQuery query;
     query.exec(upsql);
     qDebug() << query.lastError().text();
-    g_receipt = "";
     return true;
 }
 
@@ -354,7 +357,7 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
     qDebug() << qsql;
 
     updateReceiptCodeFnameById(table, lastInsertId, receipt, code, fname);
-    appendData(ui->tableViewAdd, qsql);
+    appendData(ui->tableViewAdd, model, qsql);
 
     qDebug() << code << receipt << fname;
     return true; // tbd
@@ -386,37 +389,18 @@ bool MainWindow::updateZen()
                            " WHERE `name` = '%1' AND `phone_num` = '%2' AND `gender` = '%3' "
                            ).arg(name, phone, gender);
 
-    int rowCount = appendData(ui->tableViewSearch, qsql);
+    int rowCount = appendData(ui->tableViewSearch, qmodel, qsql);
 
     qDebug() << rowCount;
 
     if (rowCount) {
         ui->tableViewSearch->show();
-        QMessageBox::information(this, "已在库中", "修改未实现");
-        //ui->tableViewSearch->hide(); // will remove tbd
+        QMessageBox::information(this, "", "数据已在库中, 如果修改请在下面表格右键单击修改项");
         return true;
     }
 
     insertRow(name, phone, gender); // will refresh tableViewAdd
     return true;
-}
-
-void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos)
-{
-    qDebug() << "begining of right";
-    int rowNum = ui->tableViewSearch->verticalHeader()->logicalIndexAt(pos);
-    if (rowNum < 0) {
-        qDebug() << "exit 298";
-        return;
-    }
-
-    QMenu *popMenu = new QMenu(this);
-    QString name = viewModelSearch->index(rowNum, 0).data().toString();
-    QString phone = viewModelSearch->index(rowNum, 2).data().toString();
-    qDebug() << name << phone;
-    popMenu->addAction(ui->actionModifyNameOrPhone);
-    popMenu->exec(QCursor::pos());
-    // tbd
 }
 
 void MainWindow::on_actionModifyNameOrPhone_triggered()
@@ -435,37 +419,11 @@ void MainWindow::on_radioButtonFemale_clicked()
     ui->radioButtonMale->setChecked(false);
 }
 
-void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
+void MainWindow::modifyFields(int colNum)
 {
-    int rowNum = ui->tableViewAdd->verticalHeader()->logicalIndexAt(pos); // Get line order
-    int colNum = ui->tableViewAdd->horizontalHeader()->logicalIndexAt(pos);
-    if (rowNum < 0 || colNum < 0) return;
-    if (colNum > 2) return;
-
-    QMenu *popMenu = new QMenu(this);
-    QString name = model->index(rowNum, 0).data().toString();
-    QString fname = model->index(rowNum, 1).data().toString();
-    QString phone = model->index(rowNum, 2).data().toString();
-    QString receipt = model->index(rowNum, 3).data().toString();
-
-    // set a global var
-    g_receipt = receipt;
-
-    qDebug() << name << phone << receipt;
-    qDebug() << rowNum << colNum;
-    popMenu->addAction(ui->actionModifyNameOrPhone);
-    popMenu->exec(QCursor::pos());
-
-    ui->pushButtonSaveChange->show();
-    ui->pushButtonCancel->show();
-    ui->lineEditCname->setText(name);
-    ui->lineEditCfname->setText(fname);
-    ui->lineEditCPhone->setText(phone);
-
     switch(colNum) {
     case 0: // name
         ui->lineEditCname->show();
-        qDebug() << "name " << name;
         ui->lineEditCname->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCfname->hide();
         if (!ui->lineEditCPhone->isHidden()) ui->lineEditCPhone->hide();
@@ -483,6 +441,65 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
         if (!ui->lineEditCfname->isHidden()) ui->lineEditCfname->hide();
         break;
     }
+
+}
+
+void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos)
+{
+    int rowNum = ui->tableViewSearch->verticalHeader()->logicalIndexAt(pos);
+    int colNum = ui->tableViewSearch->horizontalHeader()->logicalIndexAt(pos);
+
+    if (rowNum < 0 || colNum < 0)  return;
+    if (colNum > 2) return;
+
+    QString name = qmodel->index(rowNum, 0).data().toString();
+    QString fname = qmodel->index(rowNum, 1).data().toString();
+    QString phone = qmodel->index(rowNum, 2).data().toString();
+    QString receipt = qmodel->index(rowNum, 3).data().toString();
+    g_receipt = receipt;
+    qDebug() << "G_RECEIPT: " << g_receipt;
+
+    QMenu *popMenu = new QMenu(this);
+    popMenu->addAction(ui->actionModifyNameOrPhone);
+    popMenu->exec(QCursor::pos());
+
+    ui->pushButtonSaveChange->show();
+    ui->pushButtonCancel->show();
+    ui->lineEditCname->setText(name);
+    ui->lineEditCfname->setText(fname);
+    ui->lineEditCPhone->setText(phone);
+
+    modifyFields(colNum);
+
+    delete popMenu;
+}
+
+void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
+{
+    int rowNum = ui->tableViewAdd->verticalHeader()->logicalIndexAt(pos); // Get line order
+    int colNum = ui->tableViewAdd->horizontalHeader()->logicalIndexAt(pos);
+    if (rowNum < 0 || colNum < 0) return;
+    if (colNum > 2) return;
+
+    QString name = model->index(rowNum, 0).data().toString();
+    QString fname = model->index(rowNum, 1).data().toString();
+    QString phone = model->index(rowNum, 2).data().toString();
+    QString receipt = model->index(rowNum, 3).data().toString();
+    g_receipt = receipt;
+
+    // set a global var
+    QMenu *popMenu = new QMenu(this);
+    popMenu->addAction(ui->actionModifyNameOrPhone);
+    popMenu->exec(QCursor::pos());
+
+    ui->pushButtonSaveChange->show();
+    ui->pushButtonCancel->show();
+    ui->lineEditCname->setText(name);
+    ui->lineEditCfname->setText(fname);
+    ui->lineEditCPhone->setText(phone);
+
+    modifyFields(colNum);
+    delete popMenu;
 }
 
 void MainWindow::hideCwidgets()
@@ -514,6 +531,7 @@ void MainWindow::on_pushButtonSaveChange_clicked()
               ui->lineEditCPhone->text().trimmed(),
               ui->lineEditCfname->text().trimmed()
               );
+    /*
     QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
                            " FROM `zen_male` WHERE editor = '%1' "
                            " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
@@ -521,7 +539,28 @@ void MainWindow::on_pushButtonSaveChange_clicked()
                            ).arg(lineEditEditor->text().trimmed());
     qDebug() << qsql;
 
-    appendData(ui->tableViewAdd, qsql);
+    appendData(ui->tableViewAdd, model, qsql);
+    */
+
+
+    QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_male` WHERE editor = '%1' "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_female` WHERE `editor` = '%1' "
+                           ).arg(lineEditEditor->text().trimmed());
+
+    appendData(ui->tableViewAdd, model, sql);
+    qDebug() << "A" << sql;
+
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_male` WHERE `receipt` = '%1' "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " FROM `zen_female` WHERE `receipt` = '%1' "
+                           ).arg(g_receipt);
+
+    qDebug() << "B" << qsql;
+    appendData(ui->tableViewSearch, qmodel, qsql);
+
 
     hideCwidgets();
     g_receipt = "";

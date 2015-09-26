@@ -116,6 +116,33 @@
         <property name="dragDropMode">
          <enum>QAbstractItemView::NoDragDrop</enum>
         </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableView" name="tableViewSearch">
+        <property name="font">
+         <font>
+          <family>SimHei</family>
+         </font>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
+        <property name="acceptDrops">
+         <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;查询窗口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -238,30 +265,6 @@
         </item>
        </layout>
       </item>
-      <item>
-       <widget class="QTableView" name="tableViewSearch">
-        <property name="font">
-         <font>
-          <family>SimHei</family>
-         </font>
-        </property>
-        <property name="contextMenuPolicy">
-         <enum>Qt::CustomContextMenu</enum>
-        </property>
-        <property name="acceptDrops">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;查询窗口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-        <property name="dragEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
    </layout>
@@ -362,8 +365,13 @@
   <tabstop>radioButtonMale</tabstop>
   <tabstop>radioButtonFemale</tabstop>
   <tabstop>pushButtonSave</tabstop>
-  <tabstop>tableViewSearch</tabstop>
   <tabstop>tableViewAdd</tabstop>
+  <tabstop>lineEditCname</tabstop>
+  <tabstop>lineEditCfname</tabstop>
+  <tabstop>lineEditCPhone</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+  <tabstop>pushButtonSaveChange</tabstop>
+  <tabstop>tableViewSearch</tabstop>
  </tabstops>
  <resources>
   <include location="pic.qrc"/>

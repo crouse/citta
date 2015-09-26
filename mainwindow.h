@@ -30,6 +30,7 @@ public:
     QLineEdit *lineEditEditor;
     QStandardItemModel *viewModelAdd;
     QStandardItemModel *viewModelSearch;
+    QLabel *statusLabel;
 
     int lastMaleCode;
     int lastFemaleCode;
@@ -42,9 +43,10 @@ public:
     bool updateRow(QString receipt, QString name, QString phone, QString fname);
     int updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname);
     bool updateZen();
-    int appendData(QTableView *tableView, QString qsql);
+    int appendData(QTableView *tableView, QSqlQueryModel *model, QString qsql);
     void clearLineEditors();
     void hideCwidgets();
+    void modifyFields(int colNum);
 
     QString makeFname(QString name);
 
@@ -84,6 +86,7 @@ private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
     QSqlQueryModel *model;
+    QSqlQueryModel *qmodel;
 };
 
 #endif // MAINWINDOW_H
