@@ -111,3 +111,10 @@ CREATE TABLE `zen_male` (
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `zen_config` (
+  `fahui_name` varchar(45) NOT NULL COMMENT '此次法会名称',
+  `last_male_code` int(11) NOT NULL COMMENT '上次皈依男众最大皈依证号，请输入数字',
+  `last_female_code` int(11) NOT NULL COMMENT '上次皈依女众皈依最大号，请用数字',
+  `date` date DEFAULT NULL COMMENT '记录写入时间',
+  PRIMARY KEY (`fahui_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

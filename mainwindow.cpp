@@ -552,7 +552,6 @@ void MainWindow::on_actionQueryWindow_triggered()
 
 void MainWindow::getLastCode()
 {
-    int size;
     lastMaleCode = 0;
     QString fahuiName;
     QDateTime ndt;
@@ -572,31 +571,12 @@ void MainWindow::getLastCode()
         fahuiName = query.value(2).toString();
     }
 
-    size = query.next();
     if (lastMaleCode == 0) {
         QMessageBox::information(this, "", "未设置皈依配置信息，请联系管理员");
         closeDatabase();
     }
+
+    statusLabel->setText(QString(" 法会名称 %1, 上次男众最后皈依证件最大号: %2, 上次女众皈依证件最大号: %3")
+                         .arg(fahuiName).arg(lastMaleCode).arg(lastFemaleCode));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
