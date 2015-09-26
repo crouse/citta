@@ -63,6 +63,11 @@ MainWindow::MainWindow(QWidget *parent) :
         viewModelAdd->setHorizontalHeaderItem(2, new QStandardItem("手机"));
         viewModelAdd->setHorizontalHeaderItem(3, new QStandardItem("收据编号"));
         viewModelAdd->setHorizontalHeaderItem(4, new QStandardItem("皈依证号"));
+        viewModelAdd->setHorizontalHeaderItem(5, new QStandardItem("省"));
+        viewModelAdd->setHorizontalHeaderItem(6, new QStandardItem("市"));
+        viewModelAdd->setHorizontalHeaderItem(7, new QStandardItem("区/县"));
+        viewModelAdd->setHorizontalHeaderItem(8, new QStandardItem("镇/村/小区/"));
+
         ui->tableViewAdd->setModel(viewModelAdd);
         ui->tableViewAdd->horizontalHeader()->setStretchLastSection(true);
 
@@ -72,6 +77,12 @@ MainWindow::MainWindow(QWidget *parent) :
         viewModelSearch->setHorizontalHeaderItem(2, new QStandardItem("手机"));
         viewModelSearch->setHorizontalHeaderItem(3, new QStandardItem("收据编号"));
         viewModelSearch->setHorizontalHeaderItem(4, new QStandardItem("皈依证号"));
+
+        viewModelSearch->setHorizontalHeaderItem(5, new QStandardItem("省"));
+        viewModelSearch->setHorizontalHeaderItem(6, new QStandardItem("市"));
+        viewModelSearch->setHorizontalHeaderItem(7, new QStandardItem("区/县"));
+        viewModelSearch->setHorizontalHeaderItem(8, new QStandardItem("镇/村/小区/"));
+
         ui->tableViewSearch->setModel(viewModelSearch);
         ui->tableViewSearch->horizontalHeader()->setStretchLastSection(true);
     }
@@ -102,9 +113,9 @@ void MainWindow::setServerAddr()
 
 void MainWindow::afterLineEditorEditorPressed()
 {
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                            " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                            " FROM `zen_female` WHERE editor = '%1' "
                            ).arg(lineEditEditor->text().trimmed());
 
@@ -158,6 +169,10 @@ int MainWindow::appendData(QTableView *tableView, QSqlQueryModel *model, QString
     model->setHeaderData(2, Qt::Horizontal, "手机");
     model->setHeaderData(3, Qt::Horizontal, "收据编号");
     model->setHeaderData(4, Qt::Horizontal, "皈依证号");
+    model->setHeaderData(5, Qt::Horizontal, "省");
+    model->setHeaderData(6, Qt::Horizontal, "市");
+    model->setHeaderData(7, Qt::Horizontal, "区/县");
+    model->setHeaderData(8, Qt::Horizontal, "镇/村/小区");
 
     int rowCount = model->rowCount();
     if (rowCount == 0) return 0;
@@ -186,9 +201,9 @@ void MainWindow::on_actionDb_triggered()
 
    getLastCode();
 
-   QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+   QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address` "
                           " FROM `zen_male` WHERE editor = '%1' "
-                          " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                          " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                           " FROM `zen_female` WHERE editor = '%1' "
                           ).arg(lineEditEditor->text().trimmed());
 
@@ -347,9 +362,9 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
 
     QString fname = makeFname(name);
 
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                            " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                            " FROM `zen_female` WHERE editor = '%1' "
                            ).arg(editor);
 
@@ -523,17 +538,17 @@ void MainWindow::on_pushButtonSaveChange_clicked()
               ui->lineEditCfname->text().trimmed()
               );
 
-    QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+    QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address` "
                            " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address` "
                            " FROM `zen_female` WHERE `editor` = '%1' "
                            ).arg(lineEditEditor->text().trimmed());
 
     appendData(ui->tableViewAdd, model, sql);
 
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                            " FROM `zen_male` WHERE `receipt` = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
                            " FROM `zen_female` WHERE `receipt` = '%1' "
                            ).arg(g_receipt);
 
@@ -576,7 +591,7 @@ void MainWindow::getLastCode()
         closeDatabase();
     }
 
-    statusLabel->setText(QString(" 法会名称 %1, 上次男众最后皈依证件最大号: %2, 上次女众皈依证件最大号: %3")
+    statusLabel->setText(QString("    <请核对清楚：法会名称 %1, 上次男众最后皈依证件最大号: %2, 上次女众皈依证件最大号: %3>")
                          .arg(fahuiName).arg(lastMaleCode).arg(lastFemaleCode));
 }
 
