@@ -84,7 +84,7 @@
          <widget class="QPushButton" name="pushButtonSave">
           <property name="font">
            <font>
-            <family>YouYuan</family>
+            <family>PingFang SC</family>
            </font>
           </property>
           <property name="text">
@@ -224,7 +224,7 @@
           </property>
           <property name="font">
            <font>
-            <family>Yuanti SC</family>
+            <family>PingFang SC</family>
            </font>
           </property>
           <property name="text">
@@ -242,7 +242,7 @@
           </property>
           <property name="font">
            <font>
-            <family>Yuanti SC</family>
+            <family>PingFang SC</family>
            </font>
           </property>
           <property name="text">
