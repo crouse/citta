@@ -365,6 +365,7 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
     query.exec(sql);
 
     int lastInsertId = query.lastInsertId().toInt();
+    // 这边有一个BUG，就是皈依证号，当进位的时候的处理问题。
     QString code = QString("%1%2").arg(codeHeader).arg(lastInsertId + lastCode);
 
     QString receipt;
