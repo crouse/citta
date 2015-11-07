@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QDateTime>
 #define DB_NAME "citta"
-#define DB_PASS "1"
+#define DB_PASS "1!"
 #define DB_USER "citta"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -330,8 +330,8 @@ bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString
         table = QString("zen_female");
 
     QString upsql = QString("UPDATE %1 SET `name` = '%2', `phone_num` = '%3', `fname` = '%4', `personnel_id` = '%5' "
-                            " WHERE `receipt` = '%5' ")
-            .arg(table).arg(name).arg(phone).arg(fname).arg(receipt).arg(personnel_id);
+                            " WHERE `receipt` = '%6' ")
+            .arg(table).arg(name).arg(phone).arg(fname).arg(personnel_id).arg(receipt);
 
     QSqlQuery query;
     query.exec(upsql);
@@ -482,6 +482,7 @@ void MainWindow::modifyFields(int colNum)
         break;
 
     case 5: // PID
+        qDebug() << "5";
         ui->lineEditCID->show();
         ui->lineEditCID->setFocus();
         if (!ui->lineEditCname->isHidden()) ui->lineEditCname->hide();
@@ -499,12 +500,15 @@ void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos
     int colNum = ui->tableViewSearch->horizontalHeader()->logicalIndexAt(pos);
 
     if (rowNum < 0 || colNum < 0)  return;
-    if (colNum > 2) return;
+
+    if (colNum == 3 || colNum == 4) return;
+    if (colNum > 5) return;
 
     QString name = qmodel->index(rowNum, 0).data().toString();
     QString fname = qmodel->index(rowNum, 1).data().toString();
     QString phone = qmodel->index(rowNum, 2).data().toString();
     QString receipt = qmodel->index(rowNum, 3).data().toString();
+    QString personnel_id = qmodel->index(rowNum, 5).data().toString();
     g_receipt = receipt;
 
     QMenu *popMenu = new QMenu(this);
@@ -516,6 +520,8 @@ void MainWindow::on_tableViewSearch_customContextMenuRequested(const QPoint &pos
     ui->lineEditCname->setText(name);
     ui->lineEditCfname->setText(fname);
     ui->lineEditCPhone->setText(phone);
+    qDebug() << personnel_id;
+    ui->lineEditCID->setText(personnel_id);
 
     modifyFields(colNum);
 
@@ -526,13 +532,17 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
 {
     int rowNum = ui->tableViewAdd->verticalHeader()->logicalIndexAt(pos); // Get line order
     int colNum = ui->tableViewAdd->horizontalHeader()->logicalIndexAt(pos);
-    if (rowNum < 0 || colNum < 0) return;
-    if (colNum > 2) return;
+
+    if (rowNum < 0 || colNum < 0)  return;
+
+    if (colNum == 3 || colNum == 4) return;
+    if (colNum > 5) return;
 
     QString name = model->index(rowNum, 0).data().toString();
     QString fname = model->index(rowNum, 1).data().toString();
     QString phone = model->index(rowNum, 2).data().toString();
     QString receipt = model->index(rowNum, 3).data().toString();
+    QString personnel_id = model->index(rowNum, 5).data().toString();
     g_receipt = receipt;
 
     QMenu *popMenu = new QMenu(this);
@@ -544,6 +554,7 @@ void MainWindow::on_tableViewAdd_customContextMenuRequested(const QPoint &pos)
     ui->lineEditCname->setText(name);
     ui->lineEditCfname->setText(fname);
     ui->lineEditCPhone->setText(phone);
+    ui->lineEditCID->setText(personnel_id);
 
     modifyFields(colNum);
     delete popMenu;
@@ -577,7 +588,7 @@ void MainWindow::on_pushButtonSaveChange_clicked()
               ui->lineEditCname->text().trimmed(),
               ui->lineEditCPhone->text().trimmed(),
               ui->lineEditCfname->text().trimmed(),
-              ui->lineEditID->text().trimmed()
+              ui->lineEditCID->text().trimmed()
               );
 
     QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `personnel_id`, `province`, `city`, `district`, `address` "
