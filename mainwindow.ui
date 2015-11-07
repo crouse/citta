@@ -49,6 +49,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QLineEdit" name="lineEditID">
+          <property name="placeholderText">
+           <string>身份证：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QRadioButton" name="radioButtonMale">
           <property name="toolTip">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ctrl + M&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -360,8 +367,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>lineEditName</tabstop>
-  <tabstop>lineEditPhone</tabstop>
   <tabstop>radioButtonMale</tabstop>
   <tabstop>radioButtonFemale</tabstop>
   <tabstop>pushButtonSave</tabstop>

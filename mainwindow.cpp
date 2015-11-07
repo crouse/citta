@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
         viewModelAdd->setHorizontalHeaderItem(6, new QStandardItem("市"));
         viewModelAdd->setHorizontalHeaderItem(7, new QStandardItem("区/县"));
         viewModelAdd->setHorizontalHeaderItem(8, new QStandardItem("镇/村/小区/"));
+        viewModelAdd->setHorizontalHeaderItem(9, new QStandardItem("身份证号"));
 
         ui->tableViewAdd->setModel(viewModelAdd);
         ui->tableViewAdd->horizontalHeader()->setStretchLastSection(true);
@@ -82,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
         viewModelSearch->setHorizontalHeaderItem(6, new QStandardItem("市"));
         viewModelSearch->setHorizontalHeaderItem(7, new QStandardItem("区/县"));
         viewModelSearch->setHorizontalHeaderItem(8, new QStandardItem("镇/村/小区/"));
+        viewModelSearch->setHorizontalHeaderItem(9, new QStandardItem("身份证号"));
 
         ui->tableViewSearch->setModel(viewModelSearch);
         ui->tableViewSearch->horizontalHeader()->setStretchLastSection(true);
@@ -113,9 +115,9 @@ void MainWindow::setServerAddr()
 
 void MainWindow::afterLineEditorEditorPressed()
 {
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id`  "
                            " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id`  "
                            " FROM `zen_female` WHERE editor = '%1' "
                            ).arg(lineEditEditor->text().trimmed());
 
@@ -173,6 +175,7 @@ int MainWindow::appendData(QTableView *tableView, QSqlQueryModel *model, QString
     model->setHeaderData(6, Qt::Horizontal, "市");
     model->setHeaderData(7, Qt::Horizontal, "区/县");
     model->setHeaderData(8, Qt::Horizontal, "镇/村/小区");
+    model->setHeaderData(9, Qt::Horizontal, "身份证号");
 
     int rowCount = model->rowCount();
     if (rowCount == 0) return 0;
@@ -201,9 +204,9 @@ void MainWindow::on_actionDb_triggered()
 
    getLastCode();
 
-   QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address` "
+   QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id` "
                           " FROM `zen_male` WHERE editor = '%1' "
-                          " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+                          " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id` "
                           " FROM `zen_female` WHERE editor = '%1' "
                           ).arg(lineEditEditor->text().trimmed());
 
@@ -281,6 +284,7 @@ void MainWindow::clearLineEditors()
 {
     ui->lineEditName->clear();
     ui->lineEditPhone->clear();
+    ui->lineEditID->clear();
     if (ui->radioButtonFemale->isChecked()) {
         ui->radioButtonFemale->setChecked(false);
     }
@@ -317,7 +321,7 @@ void MainWindow::on_pushButtonSave_clicked()
     ui->lineEditName->setFocus();
 }
 
-bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString fname)
+bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString fname, QString personnel_id)
 {
     QString table;
     if (receipt.at(0) == QChar('A'))
@@ -325,16 +329,16 @@ bool MainWindow::updateRow(QString receipt, QString name, QString phone, QString
     else
         table = QString("zen_female");
 
-    QString upsql = QString("UPDATE %1 SET `name` = '%2', `phone_num` = '%3', `fname` = '%4' "
+    QString upsql = QString("UPDATE %1 SET `name` = '%2', `phone_num` = '%3', `fname` = '%4', `personnel_id` = '%5' "
                             " WHERE `receipt` = '%5' ")
-            .arg(table).arg(name).arg(phone).arg(fname).arg(receipt);
+            .arg(table).arg(name).arg(phone).arg(fname).arg(receipt).arg(personnel_id);
 
     QSqlQuery query;
     query.exec(upsql);
     return true;
 }
 
-bool MainWindow::insertRow(QString name, QString phone, QString gender)
+bool MainWindow::insertRow(QString name, QString phone, QString gender, QString personnel_id)
 {
     QString table;
     QString codeHeader;
@@ -358,9 +362,9 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
     }
 
     QSqlQuery query;
-    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`) "
-                          " VALUES ('%2', '%3', '%4', '%5') "
-                ).arg(table, name, phone, gender, editor);
+    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`, `personnel_id`) "
+                          " VALUES ('%2', '%3', '%4', '%5', '%6') "
+                ).arg(table, name, phone, gender, editor, personnel_id);
 
     query.exec(sql);
 
@@ -373,9 +377,9 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender)
 
     QString fname = makeFname(name);
 
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id`  "
                            " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id`  "
                            " FROM `zen_female` WHERE editor = '%1' "
                            ).arg(editor);
 
@@ -407,6 +411,7 @@ bool MainWindow::updateZen()
 {
     QString name = ui->lineEditName->text().trimmed();
     QString phone = ui->lineEditPhone->text().trimmed();
+    QString personnel_id = ui->lineEditID->text().trimmed();
 
     QString gender;
     ui->radioButtonMale->isChecked()? gender = QString("男"): gender = QString("女");
@@ -414,9 +419,14 @@ bool MainWindow::updateZen()
 
     qDebug() << gender;
 
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code` "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `personnel_id` "
                            " FROM `zen_male` "
                            " WHERE `name` = '%1' AND `phone_num` = '%2' AND `gender` = '%3' "
+                           " UNION "
+                           " SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `personnel_id` "
+                           " FROM `zen_female` "
+                           " WHERE `name` = '%1' AND `phone_num` = '%2' AND `gender` = '%3' "
+
                            ).arg(name, phone, gender);
 
     int rowCount = appendData(ui->tableViewSearch, qmodel, qsql);
@@ -429,7 +439,7 @@ bool MainWindow::updateZen()
         return true;
     }
 
-    insertRow(name, phone, gender); // will refresh tableViewAdd
+    insertRow(name, phone, gender, personnel_id); // will refresh tableViewAdd
     return true;
 }
 
@@ -554,20 +564,21 @@ void MainWindow::on_pushButtonSaveChange_clicked()
     updateRow(g_receipt,
               ui->lineEditCname->text().trimmed(),
               ui->lineEditCPhone->text().trimmed(),
-              ui->lineEditCfname->text().trimmed()
+              ui->lineEditCfname->text().trimmed(),
+              ui->lineEditID->text().trimmed()
               );
 
-    QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address` "
+    QString sql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id` "
                            " FROM `zen_male` WHERE editor = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address` "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id` "
                            " FROM `zen_female` WHERE `editor` = '%1' "
                            ).arg(lineEditEditor->text().trimmed());
 
     appendData(ui->tableViewAdd, model, sql);
 
-    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+    QString qsql = QString(" SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id`  "
                            " FROM `zen_male` WHERE `receipt` = '%1' "
-                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`  "
+                           " UNION  SELECT `name`, `fname`, `phone_num`, `receipt`, `code`, `province`, `city`, `district`, `address`, `personnel_id` "
                            " FROM `zen_female` WHERE `receipt` = '%1' "
                            ).arg(g_receipt);
 

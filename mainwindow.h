@@ -46,8 +46,8 @@ public:
     bool closeDatabase();
     bool isOk();
     bool isChinese(QString name);
-    bool insertRow(QString name, QString phone, QString gender);
-    bool updateRow(QString receipt, QString name, QString phone, QString fname);
+    bool insertRow(QString name, QString phone, QString gender, QString personnel_id);
+    bool updateRow(QString receipt, QString name, QString phone, QString fname, QString personnel_id);
     int updateReceiptCodeFnameById(QString table, int id, QString receipt, QString code, QString fname);
     bool updateZen();
     void getLastCode(); // Get last biggest Guyi Code
