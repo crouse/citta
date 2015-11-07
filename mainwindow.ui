@@ -222,6 +222,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QLineEdit" name="lineEditCID">
+          <property name="placeholderText">
+           <string>身份证：</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButtonCancel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
