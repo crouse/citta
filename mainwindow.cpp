@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QDateTime>
 #define DB_NAME "citta"
-#define DB_PASS "1!"
+#define DB_PASS "attic"
 #define DB_USER "citta"
 
 MainWindow::MainWindow(QWidget *parent) :
