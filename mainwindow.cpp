@@ -371,7 +371,7 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender, QString 
     code.sprintf("%c%010d", header, lastInsertId + lastCode);
 
     QString receipt;
-    receipt.sprintf("%c%03d", header, lastInsertId);
+    receipt.sprintf("%c%04d", header, lastInsertId);
 
     QString fname = makeFname(name);
 
