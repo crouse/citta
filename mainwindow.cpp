@@ -620,7 +620,7 @@ void MainWindow::on_actionQueryWindow_triggered()
 
 void MainWindow::getLastCode()
 {
-    lastMaleCode = 0;
+    lastMaleCode = -1;
     QString fahuiName;
     QDateTime ndt;
     QString dt = ndt.currentDateTime().date().toString("yyyy-MM-dd");
@@ -639,7 +639,7 @@ void MainWindow::getLastCode()
         fahuiName = query.value(2).toString();
     }
 
-    if (lastMaleCode == 0) {
+    if (lastMaleCode == -1) {
         QMessageBox::information(this, "", "未设置皈依配置信息，请联系管理员");
         closeDatabase();
     }
