@@ -359,9 +359,9 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender, QString 
     }
 
     QSqlQuery query;
-    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`, `personnel_id`) "
-                          " VALUES ('%2', '%3', '%4', '%5', '%6') "
-                ).arg(table, name, phone, gender, editor, personnel_id);
+    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`, `personnel_id`, `fahui_name`) "
+                          " VALUES ('%2', '%3', '%4', '%5', '%6', '%7') "
+                ).arg(table, name, phone, gender, editor, personnel_id, fahui_name);
 
     query.exec(sql);
 
@@ -640,9 +640,11 @@ void MainWindow::getLastCode()
     }
 
     if (lastMaleCode == -1) {
-        QMessageBox::information(this, "", "未设置皈依配置信息，请联系管理员");
+        QMessageBox::information(this, "", "未设置皈依配置信息，请联系管理员，设置成功后重新打开本程序");
         closeDatabase();
     }
+
+    fahui_name = fahuiName;
 
     statusLabel->setText(QString("    <请核对清楚：法会名称: %1 男众起始皈依号: %2 女众起始皈依号 %3>")
                          .arg(fahuiName).arg(lastMaleCode).arg(lastFemaleCode));

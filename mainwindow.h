@@ -5,7 +5,6 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QDebug>
-#include <QtXlsx>
 #include <QtSql>
 #include <QTcpSocket>
 #include <QMessageBox>
@@ -40,6 +39,8 @@ public:
     QString statusReceipt;
     QString statusCode;
     QString statusPhone;
+
+    QString fahui_name;
 
     bool databaseTest();
     bool connectDatabase();
