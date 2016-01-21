@@ -285,12 +285,14 @@ void MainWindow::clearLineEditors()
     ui->lineEditName->clear();
     ui->lineEditPhone->clear();
     ui->lineEditID->clear();
+/* Do not clear gender now
     if (ui->radioButtonFemale->isChecked()) {
         ui->radioButtonFemale->setChecked(false);
     }
     if (ui->radioButtonMale->isChecked()) {
         ui->radioButtonMale->setChecked(false);
     }
+*/
 }
 
 void MainWindow::on_actionSave_triggered()
