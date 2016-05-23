@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include <QLabel>
 #include <QDateTime>
+#include <QHostAddress>
+#include <QNetworkInterface>
+
 #define DB_NAME "citta"
 #define DB_PASS "attic"
 #define DB_USER "citta"
@@ -12,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     /* init global parameters */
-    serverIp = "192.168.1.5";
+    // serverIp = "192.168.1.5";
+    serverIp = "127.0.0.1";
     g_receipt = "";
 
     /* search lineEdit */
@@ -94,6 +98,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     model = new QSqlQueryModel();
     qmodel = new QSqlQueryModel();
+
+    getLocalAddr();
 }
 
 MainWindow::~MainWindow()
@@ -187,6 +193,8 @@ int MainWindow::appendData(QTableView *tableView, QSqlQueryModel *model, QString
 
 void MainWindow::on_actionDb_triggered()
 {
+
+   getLocalAddr();
    serverIp = lineEditConfig->text().trimmed();
    if (lineEditEditor->text().trimmed().isEmpty()) {
        QMessageBox::information(this, "编辑人不能为空", "请输入编辑人姓名");
@@ -361,9 +369,9 @@ bool MainWindow::insertRow(QString name, QString phone, QString gender, QString 
     }
 
     QSqlQuery query;
-    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`, `personnel_id`, `fahui_name`) "
-                          " VALUES ('%2', '%3', '%4', '%5', '%6', '%7') "
-                ).arg(table, name, phone, gender, editor, personnel_id, fahui_name);
+    QString sql = QString(" INSERT INTO `%1` (`name`, `phone_num`, `gender`, `editor`, `personnel_id`, `fahui_name`, `ipaddress`) "
+                          " VALUES ('%2', '%3', '%4', '%5', '%6', '%7', '%8') "
+                ).arg(table, name, phone, gender, editor, personnel_id, fahui_name, localAddr);
 
     query.exec(sql);
 
@@ -652,3 +660,23 @@ void MainWindow::getLastCode()
                          .arg(fahuiName).arg(lastMaleCode).arg(lastFemaleCode));
 }
 
+void MainWindow::getLocalAddr()
+{
+    QList<QHostAddress> list = QNetworkInterface::allAddresses();
+
+    for(int i = 0; i < list.count(); i++) {
+        if(!list[i].isLoopback())
+            if (list[i].protocol() == QAbstractSocket::IPv4Protocol ) {
+                QString ip = list[i].toString();
+                qDebug() << ip;
+                if (ip.startsWith("192.168")) {
+                    localAddr = ip;
+                }
+            }
+    }
+
+    if (lineEditConfig->text().trimmed().startsWith("127")) {
+        qDebug() << "getLocalAddr" << lineEditConfig->text().trimmed();
+        localAddr = "127.0.0.1";
+    }
+}

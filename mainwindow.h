@@ -56,11 +56,13 @@ public:
     void clearLineEditors();
     void hideCwidgets();
     void modifyFields(int colNum);
+    void getLocalAddr();
 
     QString makeFname(QString name);
 
     QString serverIp;
     QString g_receipt;
+    QString localAddr;
 
 private slots:
     void searchInfo();
